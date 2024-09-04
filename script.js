@@ -25,6 +25,8 @@ function divide(a, b) {
 // Fonction qui permet d'utiliser les opérations
 
 function operate(a, b, operator) {
+  a = Number(a);
+  b = Number(b);
   switch (operator) {
     case "+":
       return add(a, b);
@@ -51,6 +53,7 @@ const clearButton = document.querySelector("#clear-button");
 const equalButton = document.querySelector("#equal-button");
 const dotButton = document.querySelector("#dot-button");
 const screen = document.querySelector("#screen");
+const lastOperationScreen = document.querySelector("#lastOperationScreen");
 
 // On fait les events listeners pour les boutons
 
@@ -80,31 +83,30 @@ function appendDot() {
 }
 
 function setOperation(operator) {
-  if (currentOperation !== null || shouldResetScreen) evaluate();
-  firstOperand = parseFloat(screen.textContent);
+  if (currentOperation !== null) evaluate();
+  firstOperand = screen.textContent;
   currentOperation = operator;
-  screen.textContent = currentOperation;
+  lastOperationScreen.textContent = `${firstOperand} ${currentOperation}`;
+  shouldResetScreen = true;
 }
 
 function evaluate() {
-  if (currentOperation === null) return;
-  if (currentOperation === "/" && screen.textContent === "0") {
-    alert("You cannot divide by 0");
-    return;
-  }
-  secondOperand = parseFloat(screen.textContent);
+  if (currentOperation === null || shouldResetScreen) return;
+  secondOperand = screen.textContent;
   screen.textContent = operate(firstOperand, secondOperand, currentOperation);
+  lastOperationScreen.textContent = `${firstOperand} ${currentOperation} ${secondOperand} =`;
   currentOperation = null;
 }
 
 function clear() {
   screen.textContent = "";
+  lastOperationScreen.textContent = "";
   firstOperand = "";
   secondOperand = "";
   currentOperation = null;
 }
 
 function resetScreen() {
-  currentOperationScreen.textContent = "";
+  screen.textContent = "";
   shouldResetScreen = false;
 }
